@@ -23,10 +23,13 @@ while True:
     detection_result = detector.detect_hands(frame)
     annotated_img = detector.draw_landmarks(frame, detection_result)  
     
-    # handle mouse movement
+    # handle events
     if detection_result.multi_hand_landmarks:
         mouse.move(detection_result)
-        mouse.click(detection_result)
+        
+        # Check for a gesture
+        if not detector.check_gesture(detection_result):
+            mouse.click(detection_result) # simulate a click if the gesture is not detected
         
     cv2.imshow('GestureCV', annotated_img)
     cv2.waitKey(1)

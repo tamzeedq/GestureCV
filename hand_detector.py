@@ -1,5 +1,6 @@
 import cv2
 import mediapipe as mp
+import webbrowser
 
 class HandDetector:
     def __init__(self, static_image_mode=False, max_num_hands=1, min_detection_confidence=0.5, min_tracking_confidence=0.5):
@@ -47,3 +48,25 @@ class HandDetector:
                 self.mp_drawing.draw_landmarks(image, hand_landmarks, self.mp_hands.HAND_CONNECTIONS)
                 
         return image
+    
+    def check_gesture(self, results):
+        """
+        Check for a gesture in the results.
+        NOTE: currently the position checks for a peace sign gesture and opens YouTube if detected.
+
+        Args:
+            results: results from hand detection model
+
+        Returns:
+            bool: True if gesture is detected, False otherwise
+        """
+        hand_lms = results.multi_hand_landmarks[0].landmark
+        
+        if ((hand_lms[8].y < hand_lms[7].y and hand_lms[8].y < hand_lms[6].y) and
+            (hand_lms[12].y < hand_lms[11].y and hand_lms[12].y < hand_lms[10].y)):
+            
+            webbrowser.open("https://www.youtube.com/")  # Open YouTube in the default browser
+            
+            return True
+        else:
+            return False
